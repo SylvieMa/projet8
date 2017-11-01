@@ -80,7 +80,6 @@
 
 		callback = callback || function () {};
 
-		// Generate an ID
 	    var newId = ""; 
 	    var charset = "0123456789";
 	    var error = true;
@@ -103,10 +102,10 @@
 
     		// Assign an ID
     		do {
-		        for (var i = 0; i < 6; i++) {
+		        for (var i = 0; i < 6; i++) {// Generate a ramdom ID
 		     		newId += charset.charAt(Math.floor(Math.random() * charset.length));
 				}
-				for (var i = 0; i < todos.length; i++) {
+				for (var i = 0; i < todos.length; i++) {// confirm this ID is not already taken
 					if (todos[i].id === newId) {
 						error = false;
 						break;
@@ -131,16 +130,8 @@
 	Store.prototype.remove = function (id, callback) {
 		var data = JSON.parse(localStorage[this._dbName]);
 		var todos = data.todos;
-		//var todoId;
-		
-		/*for (var i = 0; i < todos.length; i++) {
-			if (todos[i].id == id) {
-				todoId = todos[i].id;
-			}			
-		}*/
 
 		for (var i = 0; i < todos.length; i++) {
-			//if (todos[i].id == todoId) {
 			if (todos[i].id == id) {
 				todos.splice(i, 1);
 			}

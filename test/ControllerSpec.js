@@ -3,7 +3,7 @@
 describe('controller', function () {
 	'use strict';
 
-	var subject, model, view;
+	var subject, model, view, storage;
 
 	var setUpModel = function (todos) {
 		model.read.and.callFake(function (query, callback) {
@@ -43,7 +43,7 @@ describe('controller', function () {
 		var eventRegistry = {};
 		return {
 			render: jasmine.createSpy('render'),
-			_setFilter: jasmine.createSpy('_setFilter'),
+			//_setFilter: jasmine.createSpy('_setFilter'),
 			bind: function (event, handler) {
 				eventRegistry[event] = handler;
 			},
@@ -57,6 +57,7 @@ describe('controller', function () {
 		model = jasmine.createSpyObj('model', ['read', 'getCount', 'remove', 'create', 'update']);
 		view = createViewStub();
 		subject = new app.Controller(model, view);
+		storage = new app.Store('todos-vanillajs');
 	});
 
 	it('should show entries on start-up', function () {
@@ -159,7 +160,7 @@ describe('controller', function () {
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
 		subject.setView('');
-		//spyOn(view,'_setFilter');
+		spyOn(view,'_setFilter');
 		expect(view._setFilter).toHaveBeenCalledWith('');
 	});
 
@@ -192,6 +193,27 @@ describe('controller', function () {
 	describe('new todo', function () {
 		it('should add a new todo to the model', function () {
 			// TODO: write test
+			setUpModel([]);
+			subject.setView('');
+			model.read.calls.reset();
+			spyOn(storage,'save');
+			//expect( le todo du storage.length).toEqual(0);
+			model.read.and.callFake(function (callback) {
+				callback([{
+					title: 'a new todo',
+					completed: false
+				}]);
+			});
+
+			view.trigger('newTodo', 'a new todo');
+
+			expect(model.read).toHaveBeenCalled();
+			expect(model.create).toHaveBeenCalledWith('a new todo', jasmine.any(Function));
+			expect(storage.save).toHaveBeenCalled();
+			//expect(le todo ajouté dans le storage .length).toEqual(1);
+			//expect(le todo ajouté dans le storage .title).toEqual("a new todo");
+			//expect(le todo ajouté dans le storage .completed).toEqual(false);
+			//expect(typeof l'id du todo ajouté dans le storage ).toEqual("number");
 		});
 
 		it('should add a new todo to the view', function () {

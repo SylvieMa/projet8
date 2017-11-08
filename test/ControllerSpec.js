@@ -60,12 +60,17 @@ describe('controller', function () {
 		storage = new app.Store('todos-vanillajs');
 	});
 
-	it('should show entries on start-up', function () {
+	it('should show entries on start-up when nothing in the list', function () {//quand il n'y a rien dans la liste
 		// TODO: write test
-		// on montre des entrées mais quand il n'y en a pas?
+		setUpModel([]);
+		subject.setView('');
+
+		expect(view.render).toHaveBeenCalledWith('showEntries', []);	
+	});
+
+	it('should show entries on start-up when something in the list', function () {//quand il y a un élément dans la liste
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
-
 		subject.setView('');
 
 		expect(view.render).toHaveBeenCalledWith('showEntries', [todo]);		
@@ -160,8 +165,8 @@ describe('controller', function () {
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
 		subject.setView('');
-		spyOn(view,'_setFilter');
-		expect(view._setFilter).toHaveBeenCalledWith('');
+		//spyOn(view,'_setFilter');
+		expect(view.render).toHaveBeenCalledWith('setFilter','');
 	});
 
 	it('should highlight "Active" filter when switching to active view', function () {
@@ -169,7 +174,7 @@ describe('controller', function () {
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
 		subject.setView('#/active');
-		expect(view._setFilter).toHaveBeenCalledWith('active');
+		expect(view.render).toHaveBeenCalledWith('setFilter','active');
 	});
 
 	//j'ajoute un test pour vérifier highlight sur completed to completed view
@@ -177,22 +182,51 @@ describe('controller', function () {
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
 		subject.setView('#/completed');
-		expect(view._setFilter).toHaveBeenCalledWith('completed');
+		expect(view.render).toHaveBeenCalledWith('setFilter','completed');
 	});
 
 	describe('toggle all', function () {
 		it('should toggle all todos to completed', function () {
 			// TODO: write test
+			var todo = {id: 17, title: 'my todo', completed: false};
+			setUpModel([todo]);
+			subject.setView('');
+			subject.toggleAll(true);
+
+			expect(model.update).toHaveBeenCalledWith(17, { completed: true },jasmine.any(Function));
 		});
 
 		it('should update the view', function () {
 			// TODO: write test
+			var todo = {id: 17, title: 'my todo', completed: false};
+			setUpModel([todo]);
+			subject.setView('');
+			subject.toggleAll(true);
+			expect(view.render).toHaveBeenCalledWith('elementComplete',{ id: 17, completed: true });
+			expect(view.render).toHaveBeenCalledWith('toggleAll',{checked: false});
 		});
 	});
 
 	describe('new todo', function () {
 		it('should add a new todo to the model', function () {
 			// TODO: write test
+			setUpModel([]);
+			subject.setView('');
+			model.read.calls.reset();
+			model.read.and.callFake(function (callback) {
+				callback([{
+					title: 'a new todo',
+					completed: false
+				}]);
+			});
+			view.trigger('newTodo', 'a new todo');
+
+			expect(model.read).toHaveBeenCalled();
+			expect(model.create).toHaveBeenCalledWith('a new todo', jasmine.any(Function));
+		});
+
+		//j'ajoute un test
+		it('should add a new todo to the storage', function () {
 			setUpModel([]);
 			subject.setView('');
 			model.read.calls.reset();
@@ -204,11 +238,8 @@ describe('controller', function () {
 					completed: false
 				}]);
 			});
-
 			view.trigger('newTodo', 'a new todo');
 
-			expect(model.read).toHaveBeenCalled();
-			expect(model.create).toHaveBeenCalledWith('a new todo', jasmine.any(Function));
 			expect(storage.save).toHaveBeenCalled();
 			//expect(le todo ajouté dans le storage .length).toEqual(1);
 			//expect(le todo ajouté dans le storage .title).toEqual("a new todo");

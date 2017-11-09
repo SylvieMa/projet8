@@ -43,7 +43,6 @@ describe('controller', function () {
 		var eventRegistry = {};
 		return {
 			render: jasmine.createSpy('render'),
-			//_setFilter: jasmine.createSpy('_setFilter'),
 			bind: function (event, handler) {
 				eventRegistry[event] = handler;
 			},
@@ -161,11 +160,9 @@ describe('controller', function () {
 
 	it('should highlight "All" filter by default', function () {
 		// TODO: write test
-		// voir controller ligne265 et view ligne 117 puis ligne43
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
 		subject.setView('');
-		//spyOn(view,'_setFilter');
 		expect(view.render).toHaveBeenCalledWith('setFilter','');
 	});
 
@@ -223,28 +220,6 @@ describe('controller', function () {
 
 			expect(model.read).toHaveBeenCalled();
 			expect(model.create).toHaveBeenCalledWith('a new todo', jasmine.any(Function));
-		});
-
-		//j'ajoute un test
-		it('should add a new todo to the storage', function () {
-			setUpModel([]);
-			subject.setView('');
-			model.read.calls.reset();
-			spyOn(storage,'save');
-			//expect( le todo du storage.length).toEqual(0);
-			model.read.and.callFake(function (callback) {
-				callback([{
-					title: 'a new todo',
-					completed: false
-				}]);
-			});
-			view.trigger('newTodo', 'a new todo');
-
-			expect(storage.save).toHaveBeenCalled();
-			//expect(le todo ajouté dans le storage .length).toEqual(1);
-			//expect(le todo ajouté dans le storage .title).toEqual("a new todo");
-			//expect(le todo ajouté dans le storage .completed).toEqual(false);
-			//expect(typeof l'id du todo ajouté dans le storage ).toEqual("number");
 		});
 
 		it('should add a new todo to the view', function () {

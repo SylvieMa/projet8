@@ -98,7 +98,7 @@
 
 			localStorage[this._dbName] = JSON.stringify(data);
 			callback.call(this, todos);
-		} else {
+		} else {// if no ID is actually given, so if it's a item's creation
 
     		// Assign an ID
     		do {
@@ -114,7 +114,7 @@
 	        } while (!error);
 			updateData.id = parseInt(newId);
     
-
+			//save the item
 			todos.push(updateData);
 			localStorage[this._dbName] = JSON.stringify(data);
 			callback.call(this, [updateData]);

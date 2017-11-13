@@ -59,15 +59,16 @@ describe('controller', function () {
 		storage = new app.Store('todos-vanillajs');
 	});
 
-	it('should show entries on start-up when nothing in the list', function () {//quand il n'y a rien dans la liste
-		// TODO: write test
+	it('should show entries on start-up when nothing in the list', function () {
+		//Montre les items quand il n'y a rien dans la liste
 		setUpModel([]);
 		subject.setView('');
 
 		expect(view.render).toHaveBeenCalledWith('showEntries', []);	
 	});
 
-	it('should show entries on start-up when something in the list', function () {//quand il y a un élément dans la liste
+	it('should show entries on start-up when something in the list', function () {
+		//Montre les items quand il y a un élément dans la liste
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
 		subject.setView('');
@@ -96,7 +97,7 @@ describe('controller', function () {
 		});
 
 		it('should show active entries', function () {
-			// TODO: write test
+			// dans la page active, montre les items actifs
 			var todo = {title: 'my todo', completed: false};
 			setUpModel([todo]);
 
@@ -106,7 +107,7 @@ describe('controller', function () {
 		});
 
 		it('should show completed entries', function () {
-			// TODO: write test
+			// dans la page complétée, montre les items complétés
 			var todo = {title: 'my todo', completed: true};
 			setUpModel([todo]);
 
@@ -159,7 +160,7 @@ describe('controller', function () {
 	});
 
 	it('should highlight "All" filter by default', function () {
-		// TODO: write test
+		// Dans la page de base, le filtre "all" devrait être surligné
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
 		subject.setView('');
@@ -167,15 +168,15 @@ describe('controller', function () {
 	});
 
 	it('should highlight "Active" filter when switching to active view', function () {
-		// TODO: write test
+		// Dans la page active, le filtre "active" devrait être surligné
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
 		subject.setView('#/active');
 		expect(view.render).toHaveBeenCalledWith('setFilter','active');
 	});
 
-	//j'ajoute un test pour vérifier highlight sur completed to completed view
 	it('should highlight "Completed" filter when switching to completed view', function () {
+		// Dans la page complété, le filtre "completed" devrait être surligné
 		var todo = {title: 'my todo'};
 		setUpModel([todo]);
 		subject.setView('#/completed');
@@ -184,7 +185,7 @@ describe('controller', function () {
 
 	describe('toggle all', function () {
 		it('should toggle all todos to completed', function () {
-			// TODO: write test
+			// doit changer la propriété "completed" de false à true
 			var todo = {id: 17, title: 'my todo', completed: false};
 			setUpModel([todo]);
 			subject.setView('');
@@ -194,7 +195,7 @@ describe('controller', function () {
 		});
 
 		it('should update the view', function () {
-			// TODO: write test
+			// doit mettre à jour la vue
 			var todo = {id: 17, title: 'my todo', completed: false};
 			setUpModel([todo]);
 			subject.setView('');
@@ -206,7 +207,7 @@ describe('controller', function () {
 
 	describe('new todo', function () {
 		it('should add a new todo to the model', function () {
-			// TODO: write test
+			// doit ajouter un nouvel item dans le model
 			setUpModel([]);
 			subject.setView('');
 			model.read.calls.reset();
@@ -259,7 +260,7 @@ describe('controller', function () {
 
 	describe('element removal', function () {
 		it('should remove an entry from the model', function () {
-			// TODO: write test
+			// doit supprimer un item du modele
 			var todo = {id: 17, title: 'my todo', completed: false};
 			setUpModel([todo]);
 
